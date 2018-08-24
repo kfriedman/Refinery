@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+require dirname(__FILE__) . '/../vendor/autoload.php';
+
+define('CONFIG_FILE_DIRECTORY', __DIR__ . '/../config/app');
+define('ENVIRONMENT_VARIABLE_NAME', 'SERVER_ENV');
+
+\NYPL\Refinery\Config\Config::initialize(new Configula\Config(CONFIG_FILE_DIRECTORY), getenv(ENVIRONMENT_VARIABLE_NAME));
+
+\NYPL\Refinery\HealthChecker::run(true);

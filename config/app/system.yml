@@ -1,0 +1,58 @@
+Queue:
+  ReconnectSeconds: 5
+DefaultLanguageCode: en
+Extensions:
+  Cache:      redis
+  Queue:      amqp
+  Serializer: mongo
+HealthChecker:
+  CacheTTL:   1
+HealthTests:
+  SystemTest:
+    MinimumDiskSpaceBytes:  500000000
+    MaximumLoadPercent:     80
+  QueueTest:
+    MaximumQueueMessages:   100000
+DI:
+  Services:
+    Redis:                   Redis
+    AMQPConnection:          AMQPConnection
+    AMQPChannel:             AMQPChannel
+    AMQPExchange:            AMQPExchange
+    AMQPQueue:               AMQPQueue
+    AMQPExchangeDelayed:     AMQPExchange
+    AMQPQueueDelayed:        AMQPQueue
+    RawData:                 NYPL\Refinery\Cache\CacheData\RawData
+    D7RefineryServerCurrent: NYPL\Refinery\Provider\RESTAPI\D7RefineryServerCurrent
+    D7RefineryServerNew:     NYPL\Refinery\Provider\RESTAPI\D7RefineryServerNew
+    SolrEvent:               NYPL\Refinery\Provider\RESTAPI\SolrEvent
+    StaffPicksServer:        NYPL\Refinery\Provider\RemoteJSON\StaffPicksServer
+    # Classes that contain static methods
+    CacheManager:        NYPL\Refinery\CacheManager
+    CacheClient:         NYPL\Refinery\Cache\CacheClient
+    QueueManager:        NYPL\Refinery\QueueManager
+    NDOReader:           NYPL\Refinery\ProviderHandler\NDOReader
+Testing:
+  Integration:
+    URLS:
+      - nypl/locations/v1.0/locations/bronx-library-center
+      - nypl/locations/v1.0/locations
+      - nypl/locations/v1.0/divisions
+      - nypl/locations/v1.0/alerts
+      - nypl/locations/v1.0/terms
+      - nypl/locations/v1.0/amenities
+      - nypl/locations/v1.0/divisions/wallach-division
+      - nypl/locations/v1.0/locations/schwarzman
+      - nypl/ndo/v0.1/staff-profiles?include=person,headshot,division,location,subjects.parent&fields[library]=full-name,slug,short-name,symbol&fields[division]=full-name,slug&fields[image]=uri
+      - nypl/ndo/v0.1/staff-profiles/jason-baumann?include=person,headshot,division,location,subjects.parent&fields[library]=full-name,slug,phone,email&fields[division]=full-name,slug,phone,email&fields[image]=uri
+      - nypl/ndo/v0.1/staff-profiles/sharon-howard?include=person,headshot,division,location,subjects.parent&fields[library]=full-name,slug,phone,email&fields[division]=full-name,slug,phone,email&fields[image]=uri
+      - nypl/ndo/v0.1/alerts?filter[scope]=all
+      - nypl/ndo/v0.1/staff-picks?include=item.tags,list,age
+      - nypl/ndo/v0.1/staff-picks/staff-pick-items/9781594745263-horrorstr
+      - nypl/ndo/v0.1/staff-picks/staff-pick-lists?page[size]=1&include=previous-list,next-list,picks.item.tags,picks.age
+      - nypl/ndo/v0.1/book-lists
+      - nypl/ndo/v0.1/book-lists/book-list-users
+      - nypl/ndo/v0.1/book-lists/book-list-users/nypl_mid_manhattan?page[size]=2&page[number]=2
+      - nypl/ndo/v0.1/book-lists/book-list-users/nypl_hudson_park?include=book-lists.list-items.item
+      - nypl/ndo/v0.1/book-lists/book-list-users/nypl_mid_manhattan/links/book-lists?include=user,list-items&page[size]=5&page[number]=1
+      - nypl/ndo/v0.1/site-data/header-items?filter%5Brelationships%5D%5Bparent%5D=null&include=children,related-mega-menu-panes.current-mega-menu-item.images,related-mega-menu-panes.current-mega-menu-item.related-content.authors.nypl-location,related-mega-menu-panes.current-mega-menu-item.related-content.location

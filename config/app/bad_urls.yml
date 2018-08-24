@@ -1,0 +1,16 @@
+BadAPIURLs:
+  - nypl/locations/v1.0/divisions/genealogy
+  - nypl/locations/v1.0/divisions/finding-materials
+  - nypl/locations/v1.0/divisions/collections
+  - nypl/locations/v1.0/divisions/aids-hiv-collections
+  - nypl/locations/v1.0/divisions/slavic
+  - nypl/locations/v1.0/divisions/JBH-research-and-reference-division
+  - nypl/locations/v1.0/divisions/vital-records
+  - nypl/locations/v1.0/divisions/rose-main-reading-room
+  - nypl/locations/v1.0/divisions/faqs
+  - nypl/locations/v1.0/divisions/access
+  - nypl/locations/v1.0/locations/donnell
+  - nypl/locations/v1.0/divisions/microforms
+  - nypl/locations/v1.0/locations/using-the-library
+  - nypl/locations/v1.0/divisions/internet-resources
+  - nypl/ndo/v0.1/staff-picks/staff-pick-lists/monthly-nginx_status

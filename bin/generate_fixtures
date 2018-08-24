@@ -1,0 +1,99 @@
+#!/usr/bin/env php
+<?php
+namespace NYPL\Refinery;
+
+use NYPL\Refinery\Server;
+use NYPL\Refinery\Config\Config;
+use NYPL\Refinery\Cache\CacheData;
+use NYPL\Refinery\Cache\CacheData\RawData;
+use NYPL\Refinery\Cache\CacheClient;
+
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+require dirname(__FILE__) . '/../vendor/autoload.php';
+
+define('CONFIG_FILE_DIRECTORY', __DIR__ . '/../config/app');
+define('FIXTURE_ENVIRONMENT', 'production');
+
+try {
+    if (!isset($argv[1])) {
+        throw new \Exception('You must specify a version to generate fixtures');
+    }
+
+    $version = $argv[1];
+
+    Config::initialize(new \Configula\Config(CONFIG_FILE_DIRECTORY));
+
+    Config::addOverrideItem('DefaultProviders.D7RefineryServerCurrent.Host', Config::getItem(FIXTURE_ENVIRONMENT . '.DefaultProviders.D7RefineryServerCurrent.Host', null, true));
+
+    Config::addOverrideItem('DefaultProviders.StaffPicksServer.Host', Config::getItem(FIXTURE_ENVIRONMENT . '.DefaultProviders.StaffPicksServer.Host', null, true));
+    Config::addOverrideItem('DefaultProviders.StaffPicksServer.BaseURL', Config::getItem(FIXTURE_ENVIRONMENT . '.DefaultProviders.StaffPicksServer.BaseURL', null, true));
+
+    Config::addOverrideItem('Cache.RawData.Enabled', true);
+    Config::addOverrideItem('Cache.CachedResponse.Enabled', false);
+    Config::addOverrideItem('Cache.CachedNDO.Enabled', false);
+
+    $baseDirectory = dirname(__FILE__) . '/../tests/integration/fixtures/' . $version;
+
+    if (!file_exists($baseDirectory)) {
+        mkdir($baseDirectory);
+    }
+
+    $fixtureResponseLocation = $baseDirectory . '/response';
+
+    if (!file_exists($fixtureResponseLocation)) {
+        mkdir($fixtureResponseLocation);
+    }
+
+    $fixtureRawDataLocation = $baseDirectory . '/rawdata';
+
+    if (!file_exists($fixtureRawDataLocation)) {
+        mkdir($fixtureRawDataLocation);
+    }
+
+    array_map('unlink', glob($fixtureResponseLocation . '/*'));
+    array_map('unlink', glob($fixtureRawDataLocation . '/*'));
+
+    $cacheKeys = CacheClient::keys('RawData:*');
+
+    foreach ($cacheKeys as $cacheKey) {
+        CacheClient::del($cacheKey);
+    }
+
+    $fixtureList = Config::getItem('Testing.Integration.URLS', null, true);
+
+    foreach ($fixtureList as $fixtureListItem) {
+        echo 'Generating v' . $version . ' fixture for ' . $fixtureListItem . ' from ' . Config::getItem('DefaultProviders.D7RefineryServerCurrent.Host') . "\n";
+
+        $urlComponents = parse_url($fixtureListItem);
+
+        if (isset($urlComponents['query'])) {
+            parse_str($urlComponents['query'], $queryParameters);
+        } else {
+            $queryParameters = array();
+        }
+
+        $response = Server::processRequest(explode('/', $urlComponents['path']), 'GET', $queryParameters);
+
+        file_put_contents($fixtureResponseLocation . '/' . sha1($fixtureListItem), json_encode($response->getData()));
+        file_put_contents($fixtureResponseLocation . '/index.txt', $fixtureListItem . "\n", FILE_APPEND);
+
+        echo 'Done' . "\n";
+    }
+
+    $cacheKeys = CacheClient::keys('RawData:*');
+
+    foreach ($cacheKeys as $cacheKey) {
+        $cacheKey = explode(':', $cacheKey);
+
+        $rawDataURL = str_replace(CacheData::NAMESPACE_SEPARATOR_REPLACE, CacheData::NAMESPACE_SEPARATOR, array_pop($cacheKey));
+
+        $rawData = new RawData($rawDataURL);
+
+        file_put_contents($fixtureRawDataLocation . '/' . sha1($rawDataURL), json_encode($rawData->getData()));
+        file_put_contents($fixtureRawDataLocation . '/index.txt', $rawDataURL . "\n", FILE_APPEND);
+    }
+} catch (\Exception $exception) {
+    echo $exception->getMessage() . "\n";
+}

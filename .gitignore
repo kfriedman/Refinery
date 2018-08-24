@@ -1,0 +1,4 @@
+docs
+build
+config/app/*.local.yml
+config/app/private*
