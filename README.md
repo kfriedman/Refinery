@@ -1,6 +1,6 @@
-# NYPL Refinery
+# Refinery
 
-The Refinery is a data platform at NYPL. It reads data from *Providers*, *translates* the data into standardized *NYPL Data Objects* (NDOs), and serves the NDOs - generally via RESTful API endpoints utilizing the [JSON API](http://jsonapi.org/) standard.
+The Refinery is a data platform. It reads data from *Providers*, *translates* the data into standardized *NYPL Data Objects* (NDOs), and serves the NDOs - generally via RESTful API endpoints utilizing the [JSON API](http://jsonapi.org/) standard.
 
 The Refinery adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http://www.php-fig.org/psr/psr-2/), and [PSR-4](http://www.php-fig.org/psr/psr-4/) (using the [Composer](https://getcomposer.org/) autoloader).
 
