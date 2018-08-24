@@ -4,13 +4,6 @@ The Refinery is a data platform. It reads data from *Providers*, *translates* th
 
 The Refinery adheres to [PSR-1](http://www.php-fig.org/psr/psr-1/), [PSR-2](http://www.php-fig.org/psr/psr-2/), and [PSR-4](http://www.php-fig.org/psr/psr-4/) (using the [Composer](https://getcomposer.org/) autoloader).
 
-## Installation
-
-Via Git
-~~~~
-$ git clone git@bitbucket.org:NYPL/web-refinery.git
-~~~~
-
 ## Requirements
 
 * PHP >=5.5.0
