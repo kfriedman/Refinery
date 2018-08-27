@@ -41,7 +41,7 @@ $ scripts/server_stop.sh
 
 ## Documentation
 
-Documentation is available in the the [Website](https://nypltech.atlassian.net/wiki/display/WEB/Refinery) space in Confluence.
+Documentation is available in the [Refinery](https://nypltech.atlassian.net/wiki/spaces/REF) space in Confluence.
 
 Main components of the Refinery include:
 
